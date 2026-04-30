@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kỷ Niệm Thanh Xuân</title>
+    <style>
+        /* --- CSS TỔNG THỂ --- */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;600&display=swap');
+        
+        :root {
+            --bg-color: #f4e8e1;
+            --book-bg: #fffdf5;
+            --primary: #d4a373;
+            --text-dark: #333;
+            --tv-wood: #5c3a21;
+        }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1, h2 { font-family: 'Dancing Script', cursive; text-align: center; color: var(--primary); }
+        
+        /* --- NHẠC NỀN --- */
+        .music-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: var(--primary); color: white; border: none;
+            border-radius: 50%; width: 50px; height: 50px; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 20px;
+        }
+
+        /* --- TRANG BÌA --- */
+        .hero {
+            height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; background: url('https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?auto=format&fit=crop&w=1000&q=80') center/cover;
+            border-radius: 20px; color: white; position: relative; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .hero::after { content:''; position:absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.4); border-radius: 20px; }
+        .hero-content { position: relative; z-index: 1; padding: 20px; }
+        .hero h1 { font-size: 4em; color: white; margin-bottom: 10px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .hero p { font-size: 1.2em; text-shadow: 1px 1px 5px rgba(0,0,0,0.5); }
+
+        /* --- ALBUM SÁCH TƯƠNG TÁC --- */
+        .timeline { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .time-btn { background: white; border: 2px solid var(--primary); padding: 5px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        .time-btn.active { background: var(--primary); color: white; }
+
+        .book-wrapper { perspective: 1000px; margin-bottom: 40px; }
+        .book {
+            width: 100%; max-width: 800px; margin: 0 auto; background: var(--book-bg);
+            border-radius: 5px 20px 20px 5px; box-shadow: inset 5px 0 20px rgba(0,0,0,0.1), 10px 10px 30px rgba(0,0,0,0.15);
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            border-left: 10px solid #8b5a2b; /* Gáy sách */
+        }
+        .page { display: none; padding: 30px; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        .page img { width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); pointer-events: none; }
+        .page-hint { text-align: center; color: #888; font-size: 0.9em; margin-top: 15px; font-style: italic; }
+        
+        .reaction-bar { display: flex; gap: 15px; justify-content: center; margin: 15px 0; font-size: 1.5em; }
+        .reaction-bar span { cursor: pointer; transition: transform 0.2s; }
+        .reaction-bar span:hover { transform: scale(1.3); }
+
+        /* --- TIVI CŨ --- */
+        .tv-section { margin-bottom: 50px; }
+        .tv-container {
+            background: var(--tv-wood); padding: 30px 30px 50px 30px; border-radius: 30px;
+            box-shadow: inset 0 0 20px #301d10, 0 15px 30px rgba(0,0,0,0.4); max-width: 600px; margin: 0 auto; position: relative;
+            border: 2px solid #3e2615;
+        }
+        .tv-screen {
+            background: #111; border-radius: 40px 40px 10px 10px; border: 15px solid #222; position: relative; overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.1);
+        }
+        .tv-screen video { width: 100%; display: block; }
+        .scanlines { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 4px, 3px 100%; pointer-events: none; }
+        .tv-knob-1, .tv-knob-2 { position: absolute; bottom: 15px; width: 25px; height: 25px; background: #222; border-radius: 50%; border: 3px solid #777; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+        .tv-knob-1 { right: 70px; } .tv-knob-2 { right: 30px; }
+
+        /* --- BÌNH LUẬN CÔNG KHAI --- */
+        .comment-section { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .comment-box { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; }
+        .comment-actions { font-size: 0.8em; color: #888; cursor: pointer; margin-top: 5px; }
+        .reply-box { margin-left: 30px; border-left: 2px solid #ddd; padding-left: 15px; margin-top: 10px; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .input-group input, .input-group textarea { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: inherit; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* --- HÒM THƯ RIÊNG TƯ --- */
+        .private-mail { background: #fff5f5; border: 2px dashed #ffb6b9; padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 40px; }
+
+        /* --- LỜI CHÚC & FOOTER --- */
+        .summary-wishes { text-align: center; font-size: 1.2em; line-height: 1.8; margin: 40px 0; font-style: italic; }
+        footer { text-align: center; padding: 20px; color: #777; font-size: 0.9em; border-top: 1px solid #ddd; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- Nút Nhạc -->
+    <button class="music-btn" onclick="toggleMusic()" id="musicBtn">🎵</button>
+    <audio id="bgm" loop>
+        <source src="https://files.catbox.moe/9spcxe.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- TRANG BÌA -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Thanh Xuân Của Chúng Ta</h1>
+            <p>Khóa 2026 - Nơi những giấc mơ tuổi 18 được lưu giữ mãi mãi</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- ALBUM ẢNH -->
+        <section id="album">
+            <h2>📖 Cuốn Sách Ký Ức</h2>
+            
+            <div class="timeline">
+                <button class="time-btn active" onclick="goToPage(0)">Khai Giảng</button>
+                <button class="time-btn" onclick="goToPage(1)">Hội Trại</button>
+                <button class="time-btn" onclick="goToPage(2)">Lễ Trưởng Thành</button>
+            </div>
+
+            <div class="book-wrapper">
+                <div class="book" id="book-container">
+                    
+                    <!-- Trang 1 -->
+                    <div class="page active" id="page-0">
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80" alt="Khai giảng">
+                        <h3 style="text-align: left; margin-top: 15px;">Ngày Đầu Tiên</h3>
+                        <p>Nụ cười bỡ ngỡ ngày tựu trường. Ai cũng mang trong mình những ước mơ riêng.</p>
+                        <div class="reaction-bar">
+                            <span onclick="react(this)">❤️ 0</span>
+                            <span onclick="react(this)">👍 0</span>
+                            <span onclick="react(this)">😂 0</span>
+                        </div>
+                        <p class="page-hint">👈 Vuốt sang trái/phải trên ảnh để lật trang 👉</p>
+                    </div>
+
+                    <!-- Trang 2 -->
+                    <div class="page" id="page-1">
+                        <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=800&q=80" alt="Hội trại">
+                        <h3 style="text-align: left; margin-top: 15px;">Đêm Lửa Trại</h3>
+                        <p>Hát vang bài ca tuổi trẻ dưới bầu trời đầy sao. Những cái ôm siết chặt.</p>
+                        <div class="reaction-bar">
+                            <span onclick="react(this)">❤️ 0</span>
+                            <span onclick="react(this)">👍 0</span>
+                            <span onclick="react(this)">😢 0</span>
+                        </div>
+                        <p class="page-hint">👈 Vuốt sang trái/phải trên ảnh để lật trang 👉</p>
+                    </div>
+
+                    <!-- Trang 3 -->
+                    <div class="page" id="page-2">
+                        <img src="https://images.unsplash.com/photo-1525926477800-7a3b10316ac6?auto=format&fit=crop&w=800&q=80" alt="Tốt nghiệp">
+                        <h3 style="text-align: left; margin-top: 15px;">Tuổi 18 Chào Đời</h3>
+                        <p>Chuyến đi cuối cùng của thời học sinh. Rực rỡ và đầy tiếc nuối.</p>
+                        <div class="reaction-bar">
+                            <span onclick="react(this)">❤️ 0</span>
+                            <span onclick="react(this)">😢 0</span>
+                            <span onclick="react(this)">✨ 0</span>
+                        </div>
+                        <p class="page-hint">👈 Vuốt sang trái/phải trên ảnh để lật trang 👉</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TIVI -->
+        <section class="tv-section">
+            <h2>📺 Cuộn Băng Thời Gian</h2>
+            <div class="tv-container">
+                <div class="tv-screen">
+                    <video controls poster="https://images.unsplash.com/photo-1461151304267-38535e780c79?auto=format&fit=crop&w=800&q=80">
+                        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    </video>
+                    <div class="scanlines"></div>
+                </div>
+                <div class="tv-knob-1"></div>
+                <div class="tv-knob-2"></div>
+            </div>
+        </section>
+
+        <!-- BÌNH LUẬN CÔNG KHAI -->
+        <section class="comment-section">
+            <h2>💬 Bức Tường Lưu Bút</h2>
+            
+            <div id="comments-list">
+                <!-- Bình luận mẫu -->
+                <div class="comment-box">
+                    <div class="comment-header"><span>Hải Đăng</span> <span>Vừa xong</span></div>
+                    <p>Nhớ những ngày tháng tụi mình học bài thâu đêm ghê 😭</p>
+                    <div class="comment-actions">
+                        <span onclick="alert('Đã thích bình luận!')">👍 Thích</span> • 
+                        <span onclick="document.getElementById('comment-input').focus()">Phản hồi</span>
+                    </div>
+                    <!-- Trả lời phân cấp -->
+                    <div class="reply-box">
+                        <div class="comment-header"><span>Minh Châu</span> <span>Vừa xong</span></div>
+                        <p>Đúng rồi, nhớ bát mì tôm lúc 2h sáng quá!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="user-name" placeholder="Nhập tên của bạn...">
+                <textarea id="comment-input" rows="3" placeholder="Gửi gắm điều gì đó vào bức tường này... (Hỗ trợ viết chữ, dán link ảnh)"></textarea>
+                <label style="font-size: 0.8em; color: #666;">📸 Tải ảnh lên (Mô phỏng): <input type="file" accept="image/*"></label>
+                <button class="btn-submit" onclick="addComment()">Gửi Bình Luận Công Khai</button>
+            </div>
+        </section>
+
+        <!-- HÒM THƯ RIÊNG -->
+        <section class="private-mail">
+            <h2>📮 Hòm Thư Chuyển Phát Kín</h2>
+            <p>Những lời tâm sự tại đây sẽ được mã hóa và gửi thẳng đến trang quản trị của tác giả. Không ai khác có thể đọc được.</p>
+            
+            <!-- Thẻ form action trỏ về trang đích của admin -->
+            <form action="admin_inbox.html" method="GET" onsubmit="alert('Thư của bạn đã được chuyển an toàn vào hòm thư riêng của tác giả!'); return false;">
+                <div class="input-group">
+                    <input type="text" placeholder="Người gửi (Bạn có thể để trống nếu muốn ẩn danh)...">
+                    <textarea rows="4" placeholder="Viết những điều thầm kín nhất..."></textarea>
+                    <button type="submit" class="btn-submit" style="background: #ff7675;">Gửi Thư Bí Mật 🔒</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- LỜI CHÚC TÓM LẠI -->
+        <div class="summary-wishes">
+            "Chúng ta đã đi cùng nhau một đoạn đường rực rỡ nhất của thanh xuân. Chúc cho những năm tháng sau này, dù ở đâu, làm gì, chúng ta vẫn mãi giữ được ngọn lửa nhiệt huyết của tuổi 18 trong tim. Hẹn một ngày gặp lại nhau ở đỉnh vinh quang!"
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Bản quyền thuộc về [Tên Tác Giả]. Thiết kế bằng cả trái tim.</p>
+    </footer>
+
+    <!-- SCRIPT XỬ LÝ GIAO DIỆN -->
+    <script>
+        // 1. Nhạc Nền
+        let isPlaying = false;
+        const bgm = document.getElementById('bgm');
+        const musicBtn = document.getElementById('musicBtn');
+        function toggleMusic() {
+            if (isPlaying) {
+                bgm.pause(); musicBtn.innerText = '🎵';
+            } else {
+                bgm.play(); musicBtn.innerText = '⏸️';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 2. Logic lật sách bằng nút & Vuốt (Swipe)
+        let currentPage = 0;
+        const pages = document.querySelectorAll('.page');
+        const timeBtns = document.querySelectorAll('.time-btn');
+        const bookContainer = document.getElementById('book-container');
+
+        function goToPage(index) {
+            pages[currentPage].classList.remove('active');
+            timeBtns[currentPage].classList.remove('active');
+            
+            currentPage = index;
+            
+            pages[currentPage].classList.add('active');
+            timeBtns[currentPage].classList.add('active');
+        }
+
+        // Cảm biến vuốt chạm cho thiết bị di động
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        bookContainer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
+        bookContainer.addEventListener('touchend', e => { 
+            touchendX = e.changedTouches[0].screenX; 
+            handleSwipe(); 
+        }, {passive: true});
+
+        function handleSwipe() {
+            if (touchendX < touchstartX - 50) { // Vuốt trái -> Trang sau
+                if (currentPage < pages.length - 1) goToPage(currentPage + 1);
+            }
+            if (touchendX > touchstartX + 50) { // Vuốt phải -> Trang trước
+                if (currentPage > 0) goToPage(currentPage - 1);
+            }
+        }
+
+        // 3. Xử lý thả cảm xúc
+        function react(element) {
+            let text = element.innerText;
+            let icon = text.split(' ')[0];
+            let count = parseInt(text.split(' ')[1]);
+            element.innerText = `${icon} ${count + 1}`;
+            // Thêm hiệu ứng nhỏ
+            element.style.transform = 'scale(1.5)';
+            setTimeout(() => { element.style.transform = 'scale(1)'; }, 200);
+        }
+
+        // 4. Xử lý thêm bình luận công khai
+        function addComment() {
+            const name = document.getElementById('user-name').value || 'Người giấu tên';
+            const content = document.getElementById('comment-input').value;
+            
+            if (!content.trim()) {
+                alert('Vui lòng nhập nội dung bình luận!');
+                return;
+            }
+
+            const commentList = document.getElementById('comments-list');
+            const newComment = document.createElement('div');
+            newComment.className = 'comment-box';
+            newComment.innerHTML = `
+                <div class="comment-header"><span>${name}</span> <span>Vừa xong</span></div>
+                <p>${content}</p>
+                <div class="comment-actions">
+                    <span onclick="alert('Đã thích bình luận!')">👍 Thích</span> • 
+                    <span>Phản hồi</span>
+                </div>
+            `;
+            
+            // Chèn bình luận mới lên đầu
+            commentList.insertBefore(newComment, commentList.firstChild);
+            
+            // Xóa rỗng ô nhập liệu
+            document.getElementById('comment-input').value = '';
+        }
+    </script>
+</body>
+</html>
